@@ -12,6 +12,7 @@ num_dense_layers = 1
 num_dense_nodes = 16
 learning_rate = 1e-5
 epochs = 3
+no_early_stopping = False
 
 # Model params
 
@@ -67,9 +68,6 @@ model.compile(
 # Train
 
 callbacks = [
-    callbacks.EarlyStopping(
-        monitor='val_acc',
-        patience=2),
     callbacks.TensorBoard(
         log_dir='logs',
         histogram_freq=0,
@@ -80,6 +78,11 @@ callbacks = [
     callbacks.ModelCheckpoint(
         filepath='weights.{epoch:02d}-{val_loss:.2f}.hdf5'),
 ]
+
+if not no_early_stopping:
+    callbacks.append(EarlyStopping(
+        monitor='val_acc',
+        patience=2))
 
 model.fit(
     x=data.train.images,

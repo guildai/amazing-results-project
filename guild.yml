@@ -5,7 +5,7 @@ train:
     $dest: globals
     epochs:
       description: Number of epochs to train
-      default: 3
+      default: 6
       min: 1
       max: 10
     activation:
@@ -21,15 +21,19 @@ train:
       max: 5
     num_dense_nodes:
       description: Number of nodes per dense layer
-      default: 16
+      default: 100
       min: 5
       max: 512
     learning_rate:
       description: Learning rate
-      default: 1e-5
+      default: 1e-3
       min: 1e-6
-      max: 1e-2
+      max: 1e-1
       distribution: loguniform
+    no_early_stopping:
+      description: Set to 'yes' to bypass early stopping
+      flag-value: yes
+      null-label: stop early as needed
   objective:
     maximize: epoch_val_acc
   compare:
@@ -50,8 +54,8 @@ train:
       - url: http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz
       - url: http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz
 
-reproduce-results:
-  description: Reproduce published results
+reproduce-result:
+  description: Reproduce published result
   default: true
   steps:
-    - train
+    - train epochs=15 no_early_stopping=yes --label 'published result'
